@@ -47,21 +47,11 @@ public class MainActivity extends AppCompatActivity {
             int finalI = i;
             bantumiVM.getNumSemillas(i).observe(    // Huecos y almacenes
                     this,
-                    new Observer<Integer>() {
-                        @Override
-                        public void onChanged(Integer integer) {
-                            mostrarValor(finalI, juegoBantumi.getSemillas(finalI));
-                        }
-                    });
+                    integer -> mostrarValor(finalI, juegoBantumi.getSemillas(finalI)));
         }
         bantumiVM.getTurno().observe(   // Turno
                 this,
-                new Observer<JuegoBantumi.Turno>() {
-                    @Override
-                    public void onChanged(JuegoBantumi.Turno turno) {
-                        marcarTurno(juegoBantumi.turnoActual());
-                    }
-                }
+                turno -> marcarTurno(juegoBantumi.turnoActual())
         );
     }
 
@@ -127,12 +117,16 @@ public class MainActivity extends AppCompatActivity {
                         .show();
                 return true;
 
+            case R.id.opcReiniciarPartida:
+                new ResetAlertDialog().show(getSupportFragmentManager(), "ALERT_DIALOG");
+                return true;
+
             // @TODO!!! resto opciones
 
             default:
                 Snackbar.make(
                         findViewById(android.R.id.content),
-                        getString(R.string.txtSinImplementar),
+                        "Opción no implementada",
                         Snackbar.LENGTH_LONG
                 ).show();
         }
