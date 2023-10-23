@@ -54,5 +54,11 @@
     <string name="default_filename">bantumi.json</string>
     <string name="saveTitle">Guardar Partida</string>
     <string name="saveMessage">¿Desea guardar la partida?</string>
-
+    <string name="saveSuccess">Partida guardada correctamente</string>
+    <string name="saveError">Error al guardar la partida</string>
+    <string name="loadTitle">Recuperar Partida</string>
+    <string name="loadMessage">¿Desea recuperar la partida?</string>
+    <string name="loadSuccess">Partida cargada correctamente</string>
+    <string name="loadError">Error al cargar la partida</string>
+    <string name="noSavedGame">No hay partida guardada</string>
 </resources>

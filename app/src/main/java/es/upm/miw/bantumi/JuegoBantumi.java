@@ -226,6 +226,45 @@ public class JuegoBantumi {
      * @param juegoSerializado cadena que representa el estado completo del juego
      */
     public void deserializa(String juegoSerializado) {
-        // @TODO
+        JsonObject jsonObject = JsonParser.parseString(juegoSerializado).getAsJsonObject();
+
+        // Deserializing Player 1 seeds
+        String[] player1Seeds = jsonObject.get("P1").getAsString().split(",");
+        for (int i = 0; i < 6; i++) {
+            setSemillas(i, Integer.parseInt(player1Seeds[i]));
+        }
+
+        // Deserializing Player 2 seeds
+        String[] player2Seeds = jsonObject.get("P2").getAsString().split(",");
+        for (int i = 0; i < 6; i++) {
+            setSemillas(i + 7, Integer.parseInt(player2Seeds[i]));
+        }
+
+        // Deserializing Warehouses
+        String[] warehouses = jsonObject.get("W").getAsString().split(",");
+        setSemillas(6, Integer.parseInt(warehouses[0]));
+        setSemillas(13, Integer.parseInt(warehouses[1]));
+
+        // Deserializing Turn
+        setTurno(Turno.valueOf(jsonObject.get("T").getAsString()));
+    }
+
+    /**
+     * Checks if the game has started.
+     *
+     * @return true if the game has started, false otherwise
+     */
+    public boolean juegoIniciado() {
+        for (int i = 0; i < NUM_POSICIONES; i++) {
+            // Check the warehouses
+            if ((i == 6 || i == 13) && getSemillas(i) != 0) {
+                return true;
+            }
+            // Check the holes
+            else if ((i != 6 && i != 13) && getSemillas(i) != numInicialSemillas) {
+                return true;
+            }
+        }
+        return false;
     }
 }

@@ -15,7 +15,11 @@ import androidx.lifecycle.ViewModelProvider;
 
 import com.google.android.material.snackbar.Snackbar;
 
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileOutputStream;
+import java.io.InputStreamReader;
 import java.util.Locale;
 
 import es.upm.miw.bantumi.model.BantumiViewModel;
@@ -122,7 +126,6 @@ public class MainActivity extends AppCompatActivity {
                 new ResetAlertDialog().show(getSupportFragmentManager(), "ALERT_DIALOG");
                 return true;
 
-            // this option will save the game in a file
             case R.id.opcGuardarPartida:
                 new AlertDialog.Builder(this)
                         .setTitle(R.string.saveTitle)
@@ -132,6 +135,26 @@ public class MainActivity extends AppCompatActivity {
                         .show();
                 return true;
 
+            case R.id.opcRecuperarPartida:
+                if (existeJuegoGuardado()) {
+                    if (!juegoBantumi.juegoIniciado() || juegoBantumi.juegoTerminado()) {
+                        cargarPartida();
+                    } else {
+                        new AlertDialog.Builder(this)
+                                .setTitle(R.string.loadTitle)
+                                .setMessage(R.string.loadMessage)
+                                .setPositiveButton(R.string.yes, (dialog, which) -> cargarPartida())
+                                .setNegativeButton(R.string.no, null)
+                                .show();
+                    }
+                } else {
+                    Snackbar.make(
+                            findViewById(android.R.id.content),
+                            (R.string.noSavedGame),
+                            Snackbar.LENGTH_LONG
+                    ).show();
+                }
+                return true;
 
             // @TODO!!! resto opciones
 
@@ -144,6 +167,52 @@ public class MainActivity extends AppCompatActivity {
         }
         return true;
     }
+
+    /**
+     * Carga el estado del juego desde un fichero
+     * y mostrar un mensaje de exito en caso de que
+     * se haya cargado correctamente
+     */
+    private void cargarPartida() {
+        String filename = obtenerNombreFichero();
+        try {
+            FileInputStream fis = openFileInput(filename);
+            BufferedReader reader = new BufferedReader(new InputStreamReader(fis));
+            StringBuilder sb = new StringBuilder();
+            String line;
+            while ((line = reader.readLine()) != null) {
+                sb.append(line);
+            }
+            fis.close();
+            juegoBantumi.deserializa(sb.toString());
+            Snackbar.make(
+                    findViewById(android.R.id.content),
+                    R.string.loadSuccess,
+                    Snackbar.LENGTH_LONG
+            ).show();
+            Log.i(LOG_TAG, "cargarPartida() -> " + sb);
+        } catch (Exception e) {
+            Snackbar.make(
+                    findViewById(android.R.id.content),
+                    R.string.loadError,
+                    Snackbar.LENGTH_LONG
+            ).show();
+            Log.e(LOG_TAG, "cargarPartida() -> " + e.getMessage());
+            e.printStackTrace();
+        }
+    }
+
+    /**
+     * Comprueba si existe un fichero con el nombre
+     * por defecto
+     * @return true si existe, false en caso contrario
+     */
+    private boolean existeJuegoGuardado() {
+        String filename = obtenerNombreFichero();
+        File file = new File(getFilesDir(), filename);
+        return file.exists();
+    }
+
 
     /**
      * Guarda el estado del juego en un fichero
@@ -160,14 +229,14 @@ public class MainActivity extends AppCompatActivity {
             fos.close();
             Snackbar.make(
                     findViewById(android.R.id.content),
-                    "Partida guardada correctamente",
+                    R.string.saveSuccess,
                     Snackbar.LENGTH_LONG
             ).show();
             Log.e(LOG_TAG, "guardarPartida() -> " + serializedGameData);
         } catch (Exception e) {
             Snackbar.make(
                     findViewById(android.R.id.content),
-                    "Error al guardar la partida",
+                    R.string.saveError,
                     Snackbar.LENGTH_LONG
             ).show();
             Log.e(LOG_TAG, "guardarPartida() -> " + e.getMessage());
