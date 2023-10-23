@@ -51,5 +51,8 @@
     <string name="no">No</string>
     <string name="txtDialogoResetTitulo">Reiniciar</string>
     <string name="txtDialogoResetPregunta">¿Desea reiniciar la partida?</string>
+    <string name="default_filename">bantumi.json</string>
+    <string name="saveTitle">Guardar Partida</string>
+    <string name="saveMessage">¿Desea guardar la partida?</string>
 
 </resources>

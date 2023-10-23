@@ -2,6 +2,9 @@ package es.upm.miw.bantumi;
 
 import android.util.Log;
 
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
+
 import es.upm.miw.bantumi.model.BantumiViewModel;
 
 public class JuegoBantumi {
@@ -192,8 +195,29 @@ public class JuegoBantumi {
      * @return juego serializado
      */
     public String serializa() {
-        // @TODO
-        return null;
+        JsonObject jsonObject = new JsonObject();
+
+        // Player 1 seeds
+        StringBuilder player1Seeds = new StringBuilder();
+        for (int i = 0; i < 6; i++) {
+            player1Seeds.append(getSemillas(i)).append(",");
+        }
+        jsonObject.addProperty("P1", player1Seeds.toString());
+
+        // Player 2 seeds
+        StringBuilder player2Seeds = new StringBuilder();
+        for (int i = 7; i < 13; i++) {
+            player2Seeds.append(getSemillas(i)).append(",");
+        }
+        jsonObject.addProperty("P2", player2Seeds.toString());
+
+        // Warehouses for both players
+        jsonObject.addProperty("W", getSemillas(6) + "," + getSemillas(13));
+
+        // Current Turn
+        jsonObject.addProperty("T", turnoActual().name());
+
+        return jsonObject.toString();
     }
 
     /**

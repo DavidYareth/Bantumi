@@ -15,6 +15,7 @@ import androidx.lifecycle.ViewModelProvider;
 
 import com.google.android.material.snackbar.Snackbar;
 
+import java.io.FileOutputStream;
 import java.util.Locale;
 
 import es.upm.miw.bantumi.model.BantumiViewModel;
@@ -121,6 +122,17 @@ public class MainActivity extends AppCompatActivity {
                 new ResetAlertDialog().show(getSupportFragmentManager(), "ALERT_DIALOG");
                 return true;
 
+            // this option will save the game in a file
+            case R.id.opcGuardarPartida:
+                new AlertDialog.Builder(this)
+                        .setTitle(R.string.saveTitle)
+                        .setMessage(R.string.saveMessage)
+                        .setPositiveButton(R.string.yes, (dialog, which) -> guardarPartida())
+                        .setNegativeButton(R.string.no, null)
+                        .show();
+                return true;
+
+
             // @TODO!!! resto opciones
 
             default:
@@ -131,6 +143,45 @@ public class MainActivity extends AppCompatActivity {
                 ).show();
         }
         return true;
+    }
+
+    /**
+     * Guarda el estado del juego en un fichero
+     * y mostrar un mensaje de exito en caso de que
+     * se haya guardado correctamente
+     * o un mensaje de error en caso contrario
+     */
+    private void guardarPartida() {
+        String filename = obtenerNombreFichero();
+        String serializedGameData = juegoBantumi.serializa();
+        try {
+            FileOutputStream fos = openFileOutput(filename, MODE_PRIVATE);
+            fos.write(serializedGameData.getBytes());
+            fos.close();
+            Snackbar.make(
+                    findViewById(android.R.id.content),
+                    "Partida guardada correctamente",
+                    Snackbar.LENGTH_LONG
+            ).show();
+            Log.e(LOG_TAG, "guardarPartida() -> " + serializedGameData);
+        } catch (Exception e) {
+            Snackbar.make(
+                    findViewById(android.R.id.content),
+                    "Error al guardar la partida",
+                    Snackbar.LENGTH_LONG
+            ).show();
+            Log.e(LOG_TAG, "guardarPartida() -> " + e.getMessage());
+            e.printStackTrace();
+        }
+    }
+
+    /**
+     * Devuelve el nombre del fichero
+     *
+     * @return nombre del fichero
+     */
+    private String obtenerNombreFichero() {
+        return getResources().getString(R.string.default_filename);
     }
 
     /**
