@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:padding="16dp">
+
+    <EditText
+        android:id="@+id/etPlayer1Name"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Introduce tu nombre" />
+
+    <androidx.appcompat.widget.SwitchCompat
+        android:id="@+id/swPlayer2"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Jugar contra otro jugador" />
+
+    <EditText
+        android:id="@+id/etPlayer2Name"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Introduce el nombre del otro jugador"
+        android:visibility="gone" />
+
+    <Button
+        android:id="@+id/btnSaveSettings"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Guardar ajustes" />
+
+</LinearLayout>

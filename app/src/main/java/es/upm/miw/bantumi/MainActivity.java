@@ -1,6 +1,8 @@
 package es.upm.miw.bantumi;
 
 import android.app.AlertDialog;
+import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
@@ -41,6 +43,22 @@ public class MainActivity extends AppCompatActivity {
         bantumiVM = new ViewModelProvider(this).get(BantumiViewModel.class);
         juegoBantumi = new JuegoBantumi(bantumiVM, JuegoBantumi.Turno.turnoJ1, numInicialSemillas);
         crearObservadores();
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+
+        SharedPreferences sharedPreferences = getSharedPreferences("playerNames", MODE_PRIVATE);
+
+        String player1Name = sharedPreferences.getString("player1Name", getResources().getString(R.string.txtPlayer1));
+        String player2Name = sharedPreferences.getString("player2Name", getResources().getString(R.string.txtPlayer2));
+
+        TextView tvPlayer1 = findViewById(R.id.tvPlayer1);
+        TextView tvPlayer2 = findViewById(R.id.tvPlayer2);
+
+        tvPlayer1.setText(player1Name);
+        tvPlayer2.setText(player2Name);
     }
 
     /**
@@ -111,9 +129,9 @@ public class MainActivity extends AppCompatActivity {
 
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
         switch (item.getItemId()) {
-//            case R.id.opcAjustes: // @todo Preferencias
-//                startActivity(new Intent(this, BantumiPrefs.class));
-//                return true;
+            case R.id.opcAjustes:
+                startActivity(new Intent(this, BantumiPrefs.class));
+                return true;
             case R.id.opcAcercaDe:
                 new AlertDialog.Builder(this)
                         .setTitle(R.string.aboutTitle)
