@@ -49,16 +49,21 @@ public class MainActivity extends AppCompatActivity {
     protected void onResume() {
         super.onResume();
 
-        SharedPreferences sharedPreferences = getSharedPreferences("playerNames", MODE_PRIVATE);
-
-        String player1Name = sharedPreferences.getString("player1Name", getResources().getString(R.string.txtPlayer1));
-        String player2Name = sharedPreferences.getString("player2Name", getResources().getString(R.string.txtPlayer2));
+        SharedPreferences preferences = androidx.preference.PreferenceManager.getDefaultSharedPreferences(this);
+        String prefPlayer1Name = preferences.getString(
+                "player1Name",
+                getString(R.string.txtPlayer1)
+        );
+        String prefPlayer2Name = preferences.getString(
+                "player2Name",
+                getString(R.string.txtPlayer2)
+        );
+        boolean prefTogglePlayer2 = preferences.getBoolean("togglePlayer2", false);
 
         TextView tvPlayer1 = findViewById(R.id.tvPlayer1);
         TextView tvPlayer2 = findViewById(R.id.tvPlayer2);
-
-        tvPlayer1.setText(player1Name);
-        tvPlayer2.setText(player2Name);
+        tvPlayer1.setText((prefPlayer1Name.isEmpty()) ? getString(R.string.txtPlayer1) : prefPlayer1Name);
+        tvPlayer2.setText((prefTogglePlayer2 && !prefPlayer2Name.isEmpty()) ? prefPlayer2Name : getString(R.string.txtPlayer2));
     }
 
     /**

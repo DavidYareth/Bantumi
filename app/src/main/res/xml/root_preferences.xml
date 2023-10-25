@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <PreferenceCategory android:title="Ajustes del juego">
+
+        <EditTextPreference
+            android:key="player1Name"
+            android:title="Introduce tu nombre"
+            android:hint="Introduce tu nombre"
+            android:defaultValue="" />
+
+        <SwitchPreferenceCompat
+            android:key="togglePlayer2"
+            android:title="Jugar contra otro jugador"
+            android:defaultValue="false" />
+
+        <EditTextPreference
+            android:key="player2Name"
+            android:title="Introduce el nombre del otro jugador"
+            android:hint="Introduce el nombre del otro jugador"
+            android:dependency="togglePlayer2"
+            android:defaultValue="" />
+
+    </PreferenceCategory>
+
+</PreferenceScreen>
