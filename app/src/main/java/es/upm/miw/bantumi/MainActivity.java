@@ -185,7 +185,9 @@ public class MainActivity extends AppCompatActivity {
                 }
                 return true;
 
-            // @TODO!!! resto opciones
+            case R.id.opcMejoresResultados:
+                startActivity(new Intent(this, BestResults.class));
+                return true;
 
             default:
                 Snackbar.make(
@@ -326,21 +328,24 @@ public class MainActivity extends AppCompatActivity {
      * El juego ha terminado. Volver a jugar?
      */
     private void finJuego() {
+
+        String tvPlayer1Name = ((TextView) findViewById(R.id.tvPlayer1)).getText().toString();
+        String tvPlayer2Name = ((TextView) findViewById(R.id.tvPlayer2)).getText().toString();
+
         String texto = (juegoBantumi.getSemillas(6) > 6 * numInicialSemillas)
-                ? "Gana Jugador 1"
-                : "Gana Jugador 2";
+                ? "Ha ganado " + tvPlayer1Name
+                : "Ha ganado " + tvPlayer2Name;
+
         if (juegoBantumi.getSemillas(6) == 6 * numInicialSemillas) {
-            texto = "¡¡¡ EMPATE !!!";
+            texto = "Empate";
         }
+
         Snackbar.make(
                 findViewById(android.R.id.content),
                 texto,
                 Snackbar.LENGTH_LONG
         )
         .show();
-
-        String tvPlayer1Name = ((TextView) findViewById(R.id.tvPlayer1)).getText().toString();
-        String tvPlayer2Name = ((TextView) findViewById(R.id.tvPlayer2)).getText().toString();
 
         // get the winner's name and seeds
         String winnerName = juegoBantumi.getSemillas(6) > 6 * numInicialSemillas

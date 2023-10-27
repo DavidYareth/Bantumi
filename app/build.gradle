@@ -43,4 +43,10 @@ dependencies {
     annotationProcessor "androidx.room:room-compiler:2.6.0"
     // preferences
     implementation "androidx.preference:preference:1.2.1"
+    // LiveData
+    implementation "androidx.lifecycle:lifecycle-livedata:$lifecycle_version"
+    implementation "androidx.lifecycle:lifecycle-livedata-core:$lifecycle_version"
+    // CardView
+    implementation "androidx.cardview:cardview:1.0.0"
+
 }

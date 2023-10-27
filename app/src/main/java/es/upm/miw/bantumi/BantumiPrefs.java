@@ -25,9 +25,6 @@ public class BantumiPrefs extends AppCompatActivity {
         public void onCreatePreferences(Bundle savedInstanceState, String rootKey) {
             setPreferencesFromResource(R.xml.root_preferences, rootKey);
 
-            SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(requireContext());
-
-            EditTextPreference player1NamePref = findPreference("player1Name");
             EditTextPreference player2NamePref = findPreference("player2Name");
             SwitchPreferenceCompat togglePlayer2Pref = findPreference("togglePlayer2");
 

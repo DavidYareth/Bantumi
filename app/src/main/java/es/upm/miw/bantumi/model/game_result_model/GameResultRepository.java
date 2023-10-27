@@ -20,4 +20,14 @@ public class GameResultRepository {
             gameResultDao.insert(gameResult);
         });
     }
+
+    LiveData<List<GameResult>> getTop10Results() {
+        return gameResultDao.getTop10Results();
+    }
+
+    void deleteAll() {
+        GameResultRoomDatabase.databaseWriteExecutor.execute(() -> {
+            gameResultDao.deleteAll();
+        });
+    }
 }
