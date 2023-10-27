@@ -1,5 +1,7 @@
 package es.upm.miw.bantumi;
 
+import static androidx.preference.PreferenceManager.getDefaultSharedPreferences;
+
 import android.app.AlertDialog;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -12,7 +14,6 @@ import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 
 import com.google.android.material.snackbar.Snackbar;
@@ -22,9 +23,12 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.InputStreamReader;
+import java.util.Date;
 import java.util.Locale;
 
 import es.upm.miw.bantumi.model.BantumiViewModel;
+import es.upm.miw.bantumi.model.game_result_model.GameResult;
+import es.upm.miw.bantumi.model.game_result_model.GameResultViewModel;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -32,6 +36,7 @@ public class MainActivity extends AppCompatActivity {
     JuegoBantumi juegoBantumi;
     BantumiViewModel bantumiVM;
     int numInicialSemillas;
+    GameResultViewModel gameResultViewModel;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -43,13 +48,14 @@ public class MainActivity extends AppCompatActivity {
         bantumiVM = new ViewModelProvider(this).get(BantumiViewModel.class);
         juegoBantumi = new JuegoBantumi(bantumiVM, JuegoBantumi.Turno.turnoJ1, numInicialSemillas);
         crearObservadores();
+        gameResultViewModel = new ViewModelProvider(this).get(GameResultViewModel.class);
     }
 
     @Override
     protected void onResume() {
         super.onResume();
 
-        SharedPreferences preferences = androidx.preference.PreferenceManager.getDefaultSharedPreferences(this);
+        SharedPreferences preferences = getDefaultSharedPreferences(this);
         String prefPlayer1Name = preferences.getString(
                 "player1Name",
                 getString(R.string.txtPlayer1)
@@ -333,7 +339,35 @@ public class MainActivity extends AppCompatActivity {
         )
         .show();
 
-        // @TODO guardar puntuación
+        String tvPlayer1Name = ((TextView) findViewById(R.id.tvPlayer1)).getText().toString();
+        String tvPlayer2Name = ((TextView) findViewById(R.id.tvPlayer2)).getText().toString();
+
+        // get the winner's name and seeds
+        String winnerName = juegoBantumi.getSemillas(6) > 6 * numInicialSemillas
+                ? tvPlayer1Name
+                : tvPlayer2Name;
+        int winnerSeeds = juegoBantumi.getSemillas(6) > 6 * numInicialSemillas
+                ? juegoBantumi.getSemillas(6)
+                : juegoBantumi.getSemillas(13);
+
+        // get the loser's name and seeds
+        String loserName = juegoBantumi.getSemillas(6) > 6 * numInicialSemillas
+                ? tvPlayer2Name
+                : tvPlayer1Name;
+
+        int loserSeeds = juegoBantumi.getSemillas(6) > 6 * numInicialSemillas
+                ? juegoBantumi.getSemillas(13)
+                : juegoBantumi.getSemillas(6);
+
+        GameResult gameResult = new GameResult(
+                winnerName,
+                winnerSeeds,
+                loserName,
+                loserSeeds,
+                new Date().toString()
+        );
+
+        gameResultViewModel.insert(gameResult);
 
         // terminar
         new FinalAlertDialog().show(getSupportFragmentManager(), "ALERT_DIALOG");
