@@ -31,7 +31,7 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="8dp"
             android:textSize="16sp"
-            android:textColor="@android:color/darker_gray" />
+            android:textColor="@android:color/black" />
     </LinearLayout>
 
 </androidx.cardview.widget.CardView>

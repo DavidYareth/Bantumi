@@ -1,7 +1,7 @@
 package es.upm.miw.bantumi;
 
-import android.content.DialogInterface;
 import android.os.Bundle;
+import android.os.SystemClock;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
@@ -21,7 +21,10 @@ public class ResetAlertDialog extends DialogFragment {
                 .setMessage(R.string.txtDialogoResetPregunta)
                 .setPositiveButton(
                         getString(R.string.yes),
-                        (dialog, which) -> main.juegoBantumi.inicializar(JuegoBantumi.Turno.turnoJ1)
+                        (dialog, which) -> {
+                            main.juegoBantumi.inicializar(JuegoBantumi.Turno.turnoJ1);
+                            main.stopChronometer();
+                        }
                 )
                 .setNegativeButton(
                         getString(R.string.no),

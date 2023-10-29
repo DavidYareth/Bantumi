@@ -30,6 +30,9 @@ import es.upm.miw.bantumi.model.BantumiViewModel;
 import es.upm.miw.bantumi.model.game_result_model.GameResult;
 import es.upm.miw.bantumi.model.game_result_model.GameResultViewModel;
 
+import android.os.SystemClock;
+import android.widget.Chronometer;
+
 public class MainActivity extends AppCompatActivity {
 
     protected final String LOG_TAG = "MiW";
@@ -37,6 +40,8 @@ public class MainActivity extends AppCompatActivity {
     BantumiViewModel bantumiVM;
     int numInicialSemillas;
     GameResultViewModel gameResultViewModel;
+    Chronometer chronometer;
+    boolean isChronoStarted = false;  // to check if chronometer is already started
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -49,6 +54,7 @@ public class MainActivity extends AppCompatActivity {
         juegoBantumi = new JuegoBantumi(bantumiVM, JuegoBantumi.Turno.turnoJ1, numInicialSemillas);
         crearObservadores();
         gameResultViewModel = new ViewModelProvider(this).get(GameResultViewModel.class);
+        chronometer = findViewById(R.id.chronometer);
     }
 
     @Override
@@ -172,7 +178,10 @@ public class MainActivity extends AppCompatActivity {
                         new AlertDialog.Builder(this)
                                 .setTitle(R.string.loadTitle)
                                 .setMessage(R.string.loadMessage)
-                                .setPositiveButton(R.string.yes, (dialog, which) -> cargarPartida())
+                                .setPositiveButton(R.string.yes, (dialog, which) -> {
+                                    cargarPartida();
+                                    stopChronometer();
+                                })
                                 .setNegativeButton(R.string.no, null)
                                 .show();
                     }
@@ -290,6 +299,7 @@ public class MainActivity extends AppCompatActivity {
      * @param v Vista pulsada (hueco)
      */
     public void huecoPulsado(@NonNull View v) {
+        startChronometer();
         String resourceName = getResources().getResourceEntryName(v.getId()); // pXY
         int num = Integer.parseInt(resourceName.substring(resourceName.length() - 2));
         Log.i(LOG_TAG, "huecoPulsado(" + resourceName + ") num=" + num);
@@ -328,7 +338,6 @@ public class MainActivity extends AppCompatActivity {
      * El juego ha terminado. Volver a jugar?
      */
     private void finJuego() {
-
         String tvPlayer1Name = ((TextView) findViewById(R.id.tvPlayer1)).getText().toString();
         String tvPlayer2Name = ((TextView) findViewById(R.id.tvPlayer2)).getText().toString();
 
@@ -374,7 +383,25 @@ public class MainActivity extends AppCompatActivity {
 
         gameResultViewModel.insert(gameResult);
 
+        stopChronometer();
+
         // terminar
         new FinalAlertDialog().show(getSupportFragmentManager(), "ALERT_DIALOG");
+    }
+
+    public void startChronometer() {
+        if (!isChronoStarted) {
+            chronometer.setBase(SystemClock.elapsedRealtime());
+            chronometer.start();
+            isChronoStarted = true;
+        }
+    }
+
+    public void stopChronometer() {
+        if (isChronoStarted) {
+            chronometer.setBase(SystemClock.elapsedRealtime());
+            chronometer.stop();
+            isChronoStarted = false;
+        }
     }
 }
